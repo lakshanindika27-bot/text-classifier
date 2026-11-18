@@ -1,0 +1,4 @@
+model,threshold,oof_precision,oof_recall,val_precision,val_recall,val_f1,FP,FN
+B1 tfidf + logreg,0.338,0.982,0.842,0.976,0.845,0.906,2,15
+B2a tfidf + naive bayes,0.159,0.982,0.857,0.988,0.866,0.923,1,13
+B2b tfidf + linear svm,0.011,0.98,0.889,0.989,0.897,0.941,1,10
