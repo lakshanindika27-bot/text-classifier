@@ -1,0 +1,90 @@
+name: Text Classifier CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    # Weekly (Mondays 03:00 UTC): re-run so pip-audit catches new advisories.
+    - cron: "0 3 * * 1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tc-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python-tests:
+    name: Python Automated Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-dev.txt
+
+      - name: Install dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Dependency vulnerability audit
+        run: pip-audit -r requirements.txt
+
+      - name: Run automated tests
+        run: python -m pytest tests/ -v --tb=short
+
+  docker-smoke:
+    name: Docker Build and Smoke Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build --build-arg PY=3.14 -t text-classifier .
+
+      - name: Start container
+        run: docker run -d --name tc -p 8000:8000 text-classifier
+
+      - name: Wait for health endpoint
+        run: |
+          for i in $(seq 1 30); do
+            if curl -sf localhost:8000/health; then
+              echo
+              exit 0
+            fi
+            sleep 2
+          done
+          exit 1
+
+      - name: Check predictions and input validation
+        run: |
+          spam=$(curl -s -X POST localhost:8000/predict \
+            -H 'Content-Type: application/json' \
+            -d '{"text":"WINNER!! You have won a 1000 prize. Call 09061701461 now"}')
+          echo "$spam"
+          echo "$spam" | grep -q '"label":"spam"'
+          ham=$(curl -s -X POST localhost:8000/predict \
+            -H 'Content-Type: application/json' \
+            -d '{"text":"are we still meeting for lunch tomorrow?"}')
+          echo "$ham"
+          echo "$ham" | grep -q '"label":"ham"'
+          code=$(curl -s -o /dev/null -w "%{http_code}" -X POST localhost:8000/predict \
+            -H 'Content-Type: application/json' -d '{"text":""}')
+          echo "HTTP $code"
+          test "$code" = "422"
+
+      - name: Container logs on failure
+        if: failure()
+        run: docker logs tc
