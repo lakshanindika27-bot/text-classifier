@@ -122,3 +122,14 @@ Result tables are saved under `reports/`.
 | `.github/workflows/ci.yml` | pytest, `pip-audit`, Docker build and smoke test, weekly schedule |
 
 `requirements.txt` holds the serving runtime only (scikit-learn, FastAPI, uvicorn); `requirements-dev.txt` adds the experiment and test tooling.
+
+## Experiment tracking and model registry (MLflow)
+
+Validation experiments are tracked with MLflow (local SQLite store, not committed). `python -m src.track` logs one run per candidate model (parameters, out-of-fold and validation metrics, the chosen threshold); re-running it reproduces the validation numbers in the table above exactly, because seeds are fixed. `python -m src.register` registers the final model as `sms-spam-classifier` with a `champion` alias, and logs the test-set results from `reports/test_results.json`; it does not re-evaluate the test set, and it skips registration if the same model file (by SHA-256) is already registered.
+
+    pip install -r requirements-mlops.txt
+    python -m src.track
+    python -m src.register
+    mlflow ui --backend-store-uri sqlite:///mlflow.db --port 5000
+
+Limits of this setup: the tracking store and registry live on one machine and are not part of the repository, so cloning the repo does not include them (rerun the commands above to rebuild). The Docker image does not talk to MLflow; it serves the committed `models/spam_model.joblib`, so serving has no dependency on a tracking server. `requirements-mlops.txt` is separate from the serving and CI requirements.
