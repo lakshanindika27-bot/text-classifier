@@ -7,3 +7,6 @@ data/raw/
 data/processed/
 *.save
 *.bak
+mlflow.db
+mlruns/
+mlartifacts/
