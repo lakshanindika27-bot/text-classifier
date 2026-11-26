@@ -1,0 +1,13 @@
+config,oof_pr_auc
+"char, C=1.0",0.9846
+"char, C=0.3",0.9845
+"word+char, C=0.3",0.9843
+"word+char, C=1.0",0.9835
+"char, C=3.0",0.9834
+"word+char, C=0.1",0.9831
+"char, C=0.1",0.9828
+"word+char, C=3.0",0.9826
+"word, C=1.0",0.9705
+"word, C=0.3",0.9702
+"word, C=3.0",0.9688
+"word, C=0.1",0.9673
