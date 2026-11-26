@@ -1,0 +1,13 @@
+B3b embeddings + linear svm, threshold -0.017
+
+FALSE POSITIVES (ham flagged as spam): 2
+  [+0.05] Message:some text missing* Sender:Name Missing* *Number Missing *Sent:Date missing *Missing U a lot thats y everything is missing sent via fullonsms.com
+  [+0.15] Plz note: if anyone calling from a mobile Co. &amp; asks u to type # &lt;#&gt;  or # &lt;#&gt; . Do not do so. Disconnect the call,coz it iz an attempt of 'terrorist' to make use of the sim card no. I
+
+FALSE NEGATIVES (spam missed): 6
+  [-0.22] Latest News! Police station toilet stolen, cops have nothing to go on!
+  [-0.45] dating:i have had two of these. Only started after i sent a text to talk sport radio last week. Any connection do you think or coincidence?
+  [-0.76] For sale - arsenal dartboard. Good condition but no doubles or trebles!
+  [-0.33] Welcome! Please reply with your AGE and GENDER to begin. e.g 24M
+  [-0.31] SMS. ac JSco: Energy is high, but u may not know where 2channel it. 2day ur leadership skills r strong. Psychic? Reply ANS w/question. End? Reply END JSCO
+  [-0.26] Babe: U want me dont u baby! Im nasty and have a thing 4 filthyguys. Fancy a rude time with a sexy bitch. How about we go slo n hard! Txt XXX SLO(4msgs)
