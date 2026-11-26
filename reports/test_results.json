@@ -1,0 +1,28 @@
+{
+  "model": "tfidf-char-svm-v1",
+  "threshold": -0.2976,
+  "n_test": 774,
+  "n_spam": 96,
+  "precision": 1.0,
+  "recall": 0.979,
+  "f1": 0.989,
+  "pr_auc": 0.9954,
+  "TP": 94,
+  "FP": 0,
+  "FN": 2,
+  "TN": 678,
+  "ci95": {
+    "precision": [
+      1.0,
+      1.0
+    ],
+    "recall": [
+      0.947,
+      1.0
+    ],
+    "f1": [
+      0.973,
+      1.0
+    ]
+  }
+}
